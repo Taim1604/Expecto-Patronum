@@ -61,7 +61,88 @@
       background: rgba(0, 255, 255, 0.918);
     }
 
-    /* Scroll progress bar at top of page */
+    /* HERO BUTTONS + SCROLL — Added by Claude */
+    .hero-btn-group {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .hero-btn-primary, .hero-btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+    .hero-btn-primary {
+      background: rgba(0,255,255,0.918);
+      color: #0c1228;
+      border: none;
+    }
+    .hero-btn-primary:hover {
+      background: rgba(0,220,220,0.918);
+      color: #0c1228;
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+    .hero-btn-ghost {
+      background: transparent;
+      color: #ffffff;
+      border: 2px solid rgba(255,255,255,0.4);
+    }
+    .hero-btn-ghost:hover {
+      border-color: rgba(0,255,255,0.918);
+      color: rgba(0,255,255,0.918);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    /* LOADER SCROLL LOCK — Added by Claude */
+    body.loading {
+      overflow: hidden !important;
+    }
+
+    /* DISCOVER BUTTON SLICED — Added by Claude */
+    .discover-sliced {
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)) !important;
+      transition: opacity 0.3s ease, transform 0.3s ease !important;
+    }
+    .discover-sliced:hover {
+      opacity: 0.85 !important;
+      transform: translateY(-2px) !important;
+    }
+
+    /* SCROLL INDICATOR — removed per user request */
+
+    /* MOBILE — Added by Claude */
+    @media screen and (max-width: 767px) {
+      .hero-btn-group { gap: 10px; }
+      .hero-btn-primary, .hero-btn-ghost { font-size: 11px; padding: 11px 20px; }
+      /* Mobile tap animation for buttons */
+      .main-button .scroll-to-section a:active,
+      .discover-sliced:active {
+        opacity: 0.7 !important;
+        transform: translateY(2px) !important;
+      }
+      /* Mobile hero lines — longer */
+      .main-banner .caption h6 .hero-line {
+        width: 22px !important;
+      }
+    }
+    @media screen and (max-width: 430px) {
+      .main-banner .caption h6 .hero-line {
+        width: 18px !important;
+      }
+    }
     #scroll-progress {
       position: fixed;
       top: 80px;
@@ -157,19 +238,17 @@
           <div class="caption">
 
             <!-- INSPIRATION HERO TEXT — Added by Claude -->
-            <h6 style="display:inline-flex; align-items:center; gap:12px; font-size:13px; letter-spacing:3px; color:rgba(0,255,255,0.918); -webkit-text-stroke:0.5px rgba(0,255,255,0.918);">
-              <span class="hero-line" style="display:inline-block; width:30px; height:1px; background:rgba(0,255,255,0.918);"></span>
-              <span style="font-weight:700;">O / A'Levels Education</span>
-              <span class="hero-line" style="display:inline-block; width:30px; height:1px; background:rgba(0,255,255,0.918);"></span>
+            <h6 style="display:inline-flex; align-items:center; gap:12px; font-size:13px; letter-spacing:4px; color:rgba(0,255,255,0.918); -webkit-text-stroke:0.5px rgba(0,255,255,0.918);">
+              <span class="hero-line" style="display:inline-block; width:30px; height:1px; background:#ffffff;"></span>
+              <span style="font-weight:700;">O / A'Levels Institution</span>
+              <span class="hero-line" style="display:inline-block; width:30px; height:1px; background:#ffffff;"></span>
             </h6>
             <h2 style="margin-top:20px; margin-bottom:40px; line-height:1.2;">Your Home<br><span style="font-size:0.7em; font-weight:800; line-height:1; display:block;">of</span><em style="text-decoration:underline; text-decoration-color:rgba(0,200,200,0.918); text-underline-offset:16px; text-decoration-thickness:3px;">Excellence</em></h2>
             <p class="hero-subtext" style="color:#ffffff; font-size:15px; font-weight:400; letter-spacing:0.3px; margin-top:0px; margin-bottom:30px; -webkit-text-stroke:0.3px rgba(255,255,255,0.8);">Ace Your O/A'Levels with Augmenta — where excellence meets opportunity.</p>
             <!-- END INSPIRATION HERO TEXT -->
 
               <div class="main-button">
-                  <div class="scroll-to-section"><a href="#section2">Discover more</a>
-                  
-                  </div>
+                  <div class="scroll-to-section"><a href="#section2" class="discover-sliced">Discover more</a></div>
               </div>
           </div>
       </div>
@@ -891,8 +970,11 @@
 
 
   <script>
+    /* PAGE LOADER + SCROLL LOCK — Added by Claude */
+    document.body.classList.add('loading');
     window.addEventListener('load', function() {
       document.getElementById('page-loader').classList.add('hidden');
+      document.body.classList.remove('loading');
     });
     window.addEventListener('scroll', function() {
       var scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
