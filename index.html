@@ -109,6 +109,12 @@
     /* LOADER SCROLL LOCK — Added by Claude */
     body.loading {
       overflow: hidden !important;
+      position: fixed !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+    #page-loader {
+      touch-action: none !important;
     }
 
     /* DISCOVER BUTTON SLICED — Added by Claude */
@@ -972,10 +978,16 @@
   <script>
     /* PAGE LOADER + SCROLL LOCK — Added by Claude */
     document.body.classList.add('loading');
-    window.addEventListener('load', function() {
+
+    function removeLoader() {
       document.getElementById('page-loader').classList.add('hidden');
       document.body.classList.remove('loading');
-    });
+    }
+
+    window.addEventListener('load', removeLoader);
+
+    /* Safety fallback — force remove after 11s — Added by Claude */
+    setTimeout(removeLoader, 11000);
     window.addEventListener('scroll', function() {
       var scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
       document.getElementById('scroll-progress').style.width = scrolled + '%';
