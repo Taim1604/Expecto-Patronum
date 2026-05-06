@@ -160,7 +160,54 @@
       transition: width 0.1s linear;
     }
 
-    /* HERO TEXT MOBILE — Added by Claude */
+    /* POP CARD TAP HINT — Added by Claude */
+    @media screen and (max-width: 991px) {
+      .pop-card-hint {
+        position: absolute;
+        bottom: -38px;
+        right: 16px;
+        left: auto;
+        transform: none;
+        background: rgba(0,255,255,0.15);
+        border: 1px solid rgba(0,255,255,0.4);
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border-radius: 2px;
+        white-space: nowrap;
+        pointer-events: none;
+        animation: hintPulse 1s ease-in-out infinite alternate;
+        z-index: 10;
+      }
+      .pop-card-hint::before {
+        content: '';
+        position: absolute;
+        top: -6px;
+        right: 16px;
+        left: auto;
+        transform: none;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-bottom: 6px solid rgba(0,255,255,0.4);
+      }
+      .pop-card-hint.fade-out {
+        animation: hintFade 0.5s ease forwards;
+      }
+      @keyframes hintPulse {
+        from { opacity: 0.6; }
+        to   { opacity: 1; }
+      }
+      @keyframes hintFade {
+        to { opacity: 0; visibility: hidden; }
+      }
+      /* Make first card relative for positioning */
+      .features-post {
+        position: relative;
+      }
+    }
     @media screen and (max-width: 767px) {
       .main-banner .caption h6 {
         font-size: 11px !important;
@@ -184,6 +231,14 @@
   </style>
 
   <style>
+    /* MOBILE VIDEO SWAP — Added by Claude */
+    #bg-video {
+      transition: opacity 0.4s ease;
+    }
+    #bg-video.swapping {
+      opacity: 0;
+    }
+
     /* NAV FIX — Hamburger vertical alignment — Added by Claude */
     @media screen and (max-width: 950px) {
       a.menu-link {
@@ -191,6 +246,11 @@
         height: 80px !important;
         display: flex !important;
         align-items: center !important;
+      }
+      /* Move title 1px down on mobile — Added by Claude */
+      .main-header .logo {
+        position: relative !important;
+        top: 2px !important;
       }
     }
 
@@ -259,9 +319,11 @@
 
   <section class="section main-banner" id="top" data-section="section1">
 
-      <video autoplay muted loop id="bg-video">
+      <!-- MOBILE/DESKTOP VIDEO SWAP — Added by Claude -->
+      <video autoplay muted loop id="bg-video" playsinline>
           <source src="assets/images/1.mp4" type="video/mp4"/>
       </video>
+      <!-- END VIDEO SWAP -->
 
       <div class="video-overlay header-text">
           <div class="caption">
@@ -312,6 +374,9 @@
 
               </div>
             </div>
+            <!-- POP CARD HINT — Added by Claude -->
+            <div class="pop-card-hint" id="popCardHint">Tap for info!</div>
+            <!-- END HINT -->
           </div>
         </div>
 
@@ -1028,6 +1093,90 @@
       document.getElementById('scroll-progress').style.width = scrolled + '%';
     });
   </script>
+
+  <!-- POP CARD HINT JS — Added by Claude -->
+  <script>
+    (function() {
+      var hint = document.getElementById('popCardHint');
+      if (!hint) return;
+
+      // Hide by default
+      hint.style.display = 'none';
+
+      // Only on mobile, only once per session
+      if (window.innerWidth > 991 || sessionStorage.getItem('popHintShown')) return;
+
+      var firstCard = document.querySelector('.features-post');
+      if (!firstCard) return;
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            sessionStorage.setItem('popHintShown', '1');
+            hint.style.display = 'block';
+            setTimeout(function() {
+              hint.classList.add('fade-out');
+              setTimeout(function() { hint.style.display = 'none'; }, 500);
+            }, 3670);
+            observer.disconnect();
+          }
+        });
+      }, { threshold: 0.67 });
+
+      observer.observe(firstCard);
+
+      // Dismiss hint on card click — Added by Claude
+      firstCard.addEventListener('click', function() {
+        if (hint.style.display !== 'none') {
+          hint.classList.add('fade-out');
+          setTimeout(function() { hint.style.display = 'none'; }, 500);
+        }
+      }, { once: true });
+    })();
+  </script>
+  <!-- END POP CARD HINT JS -->
+
+  <!-- MOBILE/DESKTOP VIDEO SWAP JS — Added by Claude -->
+  <script>
+    (function() {
+      var video = document.getElementById('bg-video');
+      var mobileBreakpoint = 767;
+      var mobileVideoSrc = 'assets/images/1m.mp4';
+      var desktopVideoSrc = 'assets/images/1.mp4';
+      var currentSrc = desktopVideoSrc;
+
+      function swapVideo(newSrc) {
+        if (currentSrc === newSrc) return;
+        currentSrc = newSrc;
+        video.classList.add('swapping');
+        setTimeout(function() {
+          video.src = newSrc;
+          video.load();
+          video.play();
+          video.classList.remove('swapping');
+        }, 400);
+      }
+
+      function checkViewport() {
+        if (window.innerWidth <= mobileBreakpoint) {
+          swapVideo(mobileVideoSrc);
+        } else {
+          swapVideo(desktopVideoSrc);
+        }
+      }
+
+      // Set correct video on load
+      checkViewport();
+
+      // Swap on resize (debounced)
+      var resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(checkViewport, 300);
+      });
+    })();
+  </script>
+  <!-- END VIDEO SWAP JS -->
 
  </body>
 </html>
