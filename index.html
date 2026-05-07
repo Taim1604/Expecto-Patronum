@@ -160,6 +160,12 @@
       transition: width 0.1s linear;
     }
 
+    /* POP CARD OVERLAP FIX — Added by Claude */
+    section.features {
+      position: relative;
+      z-index: 1;
+    }
+
     /* POP CARD TAP HINT — Added by Claude */
     @media screen and (max-width: 991px) {
       .pop-card-hint {
@@ -239,6 +245,18 @@
       opacity: 0;
     }
 
+    /* HAMBURGER TO CROSS TOGGLE — Added by Claude */
+    a.menu-link .fa-bars {
+      display: inline-block;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    a.menu-link.active .fa-bars {
+      transform: rotate(90deg);
+    }
+    a.menu-link.active .fa-bars::before {
+      content: "\f00d" !important;
+    }
+
     /* NAV FIX — Hamburger vertical alignment — Added by Claude */
     @media screen and (max-width: 950px) {
       a.menu-link {
@@ -252,6 +270,43 @@
         position: relative !important;
         top: 2px !important;
       }
+    }
+
+    /* TABS SECTION BACKGROUND — Replaces Tabs.jpg — Added by Claude */
+    section.info {
+      background-image: none !important;
+      background-color: #172238 !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    section.info::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 15% 50%, rgba(0,180,180,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 50% at 85% 30%, rgba(22,34,58,0.9) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 50% 100%, rgba(0,120,120,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    section.info::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 60px,
+        rgba(255,255,255,0.012) 60px,
+        rgba(255,255,255,0.012) 61px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+    section.info .container {
+      position: relative;
+      z-index: 1;
     }
 
     /* NAV GAP FIX — Added by Claude */
@@ -425,7 +480,7 @@
   <!--//Pop Cards//-->
 
   <!-- SEPARATOR LINE — Added by Claude -->
-  <div style="border-top: 2px solid rgba(250,250,250,0.1); margin: 0;"></div>
+  <div style="border-top: 2px solid rgba(250,250,250,0.1); margin: 0; position: relative; z-index: 1;"></div>
   <!-- END SEPARATOR LINE -->
 
 
@@ -1036,6 +1091,7 @@
   if(href.indexOf('#') === 0) {
     e.preventDefault();
     $('#menu').removeClass('active');
+    $('.menu-link').removeClass('active');
     showSection(href, true);
   } 
   // If it's a real page like resources.html, do nothing and let it load!
